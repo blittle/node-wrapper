@@ -11,45 +11,54 @@
 #
 # CONFIGURATION
 # ============= 
-# NODEW_INSTALL_PATh - an env variable if present will override where node is locally installed and linked to. Defaults to ~/.node
+# NODEW_INSTALL_PATH - an env variable if present will override where node is locally installed and linked to. Needs to be an absolute path. Defaults to /home/<youruser>/.node
 # NODEW_INSTALL_VERSION - an env variable specifiy the version of node to install - Defaults to the value posted here: https://raw.githubusercontent.com/blittle/node-wrapper/master/node-version 
 #
 # Sample usage: ./npmw install express --save 
 
-pwd=`pwd`
-
 INSTALL_PATH=$NODEW_INSTALL_PATH
 INSTALL_VERSION=$NODEW_INSTALL_VERSION
 
+# if there is no defined install path, then default to ~/.node
 if [[ -z "$INSTALL_PATH" ]]; then
   INSTALL_PATH=$(eval echo ~)"/.node" 
 fi
 
+# if there is no defined node version, fetch the version within a remote file
 if [[ -z "$INSTALL_VERSION" ]]; then
   echo "Fetching version to install"
   INSTALL_VERSION=$(eval curl https://raw.githubusercontent.com/blittle/node-wrapper/master/node-version);
 fi
 
+# create the install directory
 if [ ! -d "$INSTALL_PATH" ]; then 
   echo "Creating directory: $INSTALL_PATH"
   mkdir -p "$INSTALL_PATH" 
+else
+  # if the install directory already exists, so should a file defining the currently installed version of node
+  CURRENT_INSTALLED_VERSION=$(eval cat $INSTALL_PATH/installed_version)
 fi
 
+# calculate the absolute path of the location to install files
 cd $INSTALL_PATH
 INSTALL_PATH=`pwd`
 cd -
 
-if [ ! -f "$INSTALL_PATH/node.tar.gz" ]; then
+# fetch the desired version of node if we don't have a cached version copy
+if [ ! -d "$INSTALL_PATH/node-v$INSTALL_VERSION" ]; then
   echo "fetching nodejs to:  $INSTALL_PATH/node.tar.gz";
   wget -O $INSTALL_PATH/node.tar.gz http://nodejs.org/dist/v$INSTALL_VERSION/node-v$INSTALL_VERSION.tar.gz 
   tar xzf $INSTALL_PATH/node.tar.gz -C $INSTALL_PATH/
 fi
 
-if [ ! -d "$INSTALL_PATH/node-install" ]; then
+# make and install the desired version of node, unless it is already installed
+if [ ! -d "$INSTALL_PATH/node-install" ] || [ "$INSTALL_VERSION" != "$CURRENT_INSTALLED_VERSION" ]; then
   echo "installing nodejs to: $INSTALL_PATH/node-v$INSTALL_VERSION";
   cd $INSTALL_PATH/node-v$INSTALL_VERSION/
   ./configure --prefix="$INSTALL_PATH/node-install/" && make && make install
   cd - 
+  echo $INSTALL_VERSION > $INSTALL_PATH/installed_version 
 fi
 
+# start the npm executable
 $INSTALL_PATH/node-install/bin/npm "$@"
