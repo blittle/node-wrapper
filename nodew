@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Node.js wrapper which will download and build and proxy to node locally. 
+# This allows you to automatically manage the installed version of node.
+#
+# REQUIREMENTS
+# ============
+# unix - Make sure that you have the prerequisites for building node on https://github.com/joyent/node/wiki/installation#prerequisites-and-known-issues-ofbuilding
+# macos - Untested
+# windows - don't ask 
+#
+# CONFIGURATION
+# ============= 
+# NODEW_INSTALL_PATh - an env variable if present will override where node is locally installed and linked to. Defaults to ~/.node
+# NODEW_INSTALL_VERSION - an env variable specifiy the version of node to install - Defaults to 0.10.28
+#
+# Sample usage: ./nodew my-script.js 
+
+pwd=`pwd`
+
+INSTALL_PATH=$NODEW_INSTALL_PATH
+INSTALL_VERSION=$NODEW_INSTALL_VERSION
+
+if [[ -z "$INSTALL_PATH" ]]; then
+  INSTALL_PATH=$(eval echo ~)"/.node" 
+fi
+
+if [[ -z "$INSTALL_VERSION" ]]; then
+  INSTALL_VERSION="0.10.28";
+fi
+
+if [ ! -d "$INSTALL_PATH" ]; then 
+  echo "Creating directory: $INSTALL_PATH"
+  mkdir -p "$INSTALL_PATH" 
+fi
+
+cd $INSTALL_PATH
+INSTALL_PATH=`pwd`
+cd -
+
+if [ ! -f "$INSTALL_PATH/node.tar.gz" ]; then
+  echo "fetching nodejs to:  $INSTALL_PATH/node.tar.gz";
+  wget -O $INSTALL_PATH/node.tar.gz http://nodejs.org/dist/v$INSTALL_VERSION/node-v$INSTALL_VERSION.tar.gz 
+  tar xzf $INSTALL_PATH/node.tar.gz -C $INSTALL_PATH/
+fi
+
+if [ ! -d "$INSTALL_PATH/node-install" ]; then
+  echo "installing nodejs to: $INSTALL_PATH/node-v$INSTALL_VERSION";
+  cd $INSTALL_PATH/node-v$INSTALL_VERSION/
+  ./configure --prefix="$INSTALL_PATH/node-install/" && make && make install
+  cd - 
+fi
+
+$INSTALL_PATH/node-install/bin/node "$@"
