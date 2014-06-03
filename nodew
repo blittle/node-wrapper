@@ -12,7 +12,7 @@
 # CONFIGURATION
 # ============= 
 # NODEW_INSTALL_PATh - an env variable if present will override where node is locally installed and linked to. Defaults to ~/.node
-# NODEW_INSTALL_VERSION - an env variable specifiy the version of node to install - Defaults to 0.10.28
+# NODEW_INSTALL_VERSION - an env variable specifiy the version of node to install - Defaults to the value posted here: https://raw.githubusercontent.com/blittle/node-wrapper/master/node-version 
 #
 # Sample usage: ./nodew my-script.js 
 
@@ -26,7 +26,8 @@ if [[ -z "$INSTALL_PATH" ]]; then
 fi
 
 if [[ -z "$INSTALL_VERSION" ]]; then
-  INSTALL_VERSION="0.10.28";
+  echo "Fetching version to install"
+  INSTALL_VERSION=$(eval curl https://raw.githubusercontent.com/blittle/node-wrapper/master/node-version);
 fi
 
 if [ ! -d "$INSTALL_PATH" ]; then 
