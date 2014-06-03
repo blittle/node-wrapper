@@ -19,5 +19,5 @@ The first time running either the node or npm wrapper, node will be downloaded, 
 
 ###Options
 Configure the behavior of the wrappers with the following environment variables:
- * `NODEW_INSTALL_PATH` - The location which node will be downloaded and cached - defaults to `~/.node`
+ * `NODEW_INSTALL_PATH` - The location which node will be downloaded and cached - *needs* to be an absolute path - defaults to `/home/<your-user>/.node`
  * `NODEW_INSTALL_VERSION` - The version of Node to install - defaults to the value in https://raw.githubusercontent.com/blittle/node-wrapper/master/node-version
