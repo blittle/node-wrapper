@@ -10,7 +10,7 @@ Download the two executables `nodew` and `npmw` to your desired location (or clo
 Linux/Unix - As long as you can manually compile and build node on your machine, you should be good to go. This was tested in Linux but not in MacOS.
 
 ###Usage
-The first time running either the node or npm wrapper, node will be downloaded, built, and cached locally. Subsequent calls to `nodew` and `npmw` should directly proxy to the cached binaries.
+The first time running either the node or npm wrapper, node will be downloaded, built, and cached locally. Subsequent calls to `nodew` and `npmw` should directly proxy to the cached binaries. All parameters passed to the wrapper executables will be directly passed to the underlying node/npm binaries.
 
 ```shell
 ./npmw install --save express
