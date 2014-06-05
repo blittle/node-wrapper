@@ -19,6 +19,8 @@ The first time running either the node or npm wrapper, node will be downloaded, 
 ./nodew app.js
 ```
 
+If you would like install and run global packages, you will need to add `/home/<youruser>/.node/node-install/bin` (or to your custom nodew install path) to your path.
+
 ###Options
 Configure the behavior of the wrappers with the following environment variables:
  * `NODEW_INSTALL_PATH` - The location which node will be downloaded and cached - *needs* to be an absolute path - defaults to `/home/<your-user>/.node`
