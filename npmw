@@ -18,6 +18,7 @@
 
 INSTALL_PATH=$NODEW_INSTALL_PATH
 INSTALL_VERSION=$NODEW_INSTALL_VERSION
+DIST_BASE_URL=$NODEW_DIST_BASE_URL
 
 # if there is no defined install path, then default to ~/.node
 if [[ -z "$INSTALL_PATH" ]]; then
@@ -39,15 +40,21 @@ else
   CURRENT_INSTALLED_VERSION=$(eval cat $INSTALL_PATH/installed_version)
 fi
 
+# if there is no defined dist base url, uses default location to download
+if [[ -z "$DIST_BASE_URL" ]]; then
+  DIST_BASE_URL="http://nodejs.org/dist"
+fi
+
 # calculate the absolute path of the location to install files
 cd $INSTALL_PATH
 INSTALL_PATH=`pwd`
 cd -
 
+
 # fetch the desired version of node if we don't have a cached version copy
 if [ ! -d "$INSTALL_PATH/node-v$INSTALL_VERSION" ]; then
   echo "fetching nodejs to:  $INSTALL_PATH/node.tar.gz";
-  wget -O $INSTALL_PATH/node.tar.gz http://nodejs.org/dist/v$INSTALL_VERSION/node-v$INSTALL_VERSION.tar.gz 
+  wget -O $INSTALL_PATH/node.tar.gz $DIST_BASE_URL/v$INSTALL_VERSION/node-v$INSTALL_VERSION.tar.gz 
   tar xzf $INSTALL_PATH/node.tar.gz -C $INSTALL_PATH/
 fi
 
