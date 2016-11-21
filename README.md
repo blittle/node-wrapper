@@ -25,3 +25,4 @@ If you would like install and run global packages, you will need to add `/home/<
 Configure the behavior of the wrappers with the following environment variables:
  * `NODEW_INSTALL_PATH` - The location which node will be downloaded and cached - *needs* to be an absolute path - defaults to `/home/<your-user>/.node`
  * `NODEW_INSTALL_VERSION` - The version of Node to install - defaults to the value in https://raw.githubusercontent.com/blittle/node-wrapper/master/node-version
+ * `NODEW_DIST_BASE_URL` - The location to download Node - defaults to `http://nodejs.org/dist`
